@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SocketInternalError","[`crate::base::Socket`] errorsContains the possible errors for a socket that may need to be handled internally or by the user"]]});

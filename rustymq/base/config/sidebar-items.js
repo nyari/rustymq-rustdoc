@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TransportConfiguration","Used for the configuration of [`crate::base::Transport`]s"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ChangeNotifyMutex",""],["ChangeNotifyMutexGuard",""],["Semaphore","SemaphoreSimple semaphore to signal if a thread has stopped"]],"type":[["ChgNtfMutex",""],["ChgNtfMutexGuard",""]]});

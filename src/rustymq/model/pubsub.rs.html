@@ -267,6 +267,9 @@
 <span id="264">264</span>
 <span id="265">265</span>
 <span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Publisher-Subscriber communication model</span>
 <span class="doccomment">//! This module contains the socket implementation for a publisher-subscriber communication model.</span>
@@ -275,21 +278,24 @@
 <span class="doccomment">//! will be distributed the all the connecting peers with a [`SubscriberSocket`]</span>
 <span class="doccomment">//! ## Example</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use rustymq::core::socket::{Socket, InwardSocket, OutwardSocket, OpFlag};</span>
-<span class="doccomment">//! use rustymq::core::message::{Message, RawMessage};</span>
-<span class="doccomment">//! use rustymq::core::transport::{TransportMethod, NetworkAddress};</span>
-<span class="doccomment">//! use rustymq::model::pubsub::{PublisherSocket, SubscriberSocket};</span>
+<span class="doccomment">//! use rustymq::base::{Socket, InwardSocket, OutwardSocket, OpFlag,</span>
+<span class="doccomment">//!                     Message, RawMessage,</span>
+<span class="doccomment">//!                     TransportMethod, NetworkAddress};</span>
+<span class="doccomment">//! use rustymq::model::{PublisherSocket, SubscriberSocket};</span>
 <span class="doccomment">//! use rustymq::transport::network::tcp;</span>
 <span class="doccomment">//! # fn main() {</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let publisher = PublisherSocket::new(tcp::AcceptorTransport::new(tcp::StreamConnectionBuilder::new(),</span>
-<span class="doccomment">//!                                                                  tcp::StreamListenerBuilder::new()));</span>
+<span class="doccomment">//! let publisher = PublisherSocket::new(</span>
+<span class="doccomment">//!                     tcp::AcceptorTransport::new(</span>
+<span class="doccomment">//!                         tcp::StreamConnectionBuilder::new(),</span>
+<span class="doccomment">//!                         tcp::StreamListenerBuilder::new()</span>
+<span class="doccomment">//!                 ));</span>
 <span class="doccomment">//! let subscriber1 = SubscriberSocket::new(tcp::InitiatorTransport::new(tcp::StreamConnectionBuilder::new()));</span>
 <span class="doccomment">//! let subscriber2 = SubscriberSocket::new(tcp::InitiatorTransport::new(tcp::StreamConnectionBuilder::new()));</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! publisher.bind(TransportMethod::Network(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap()));</span>
-<span class="doccomment">//! subscriber1.connect(TransportMethod::Network(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap()));</span>
-<span class="doccomment">//! subscriber2.connect(TransportMethod::Network(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap()));</span>
+<span class="doccomment">//! publisher.bind(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap().into());</span>
+<span class="doccomment">//! subscriber1.connect(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap().into());</span>
+<span class="doccomment">//! subscriber2.connect(NetworkAddress::from_dns(&quot;localhost:12000&quot;.to_string()).unwrap().into());</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Make sure that TCP connection is established otherwise the first sent message might not arrive</span>
 <span class="doccomment">//! std::thread::sleep(std::time::Duration::from_millis(100));</span>
@@ -305,12 +311,12 @@
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">message</span>::{<span class="ident">Message</span>, <span class="ident">MessageMetadata</span>, <span class="ident">PeerId</span>, <span class="ident">RawMessage</span>};
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">socket</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">message</span>::{<span class="ident">Message</span>, <span class="ident">MessageMetadata</span>, <span class="ident">PeerId</span>, <span class="ident">RawMessage</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">socket</span>::{
     <span class="ident">InwardSocket</span>, <span class="ident">OpFlag</span>, <span class="ident">OutwardSocket</span>, <span class="ident">PeerIdentification</span>, <span class="ident">Socket</span>, <span class="ident">SocketError</span>,
-    <span class="ident">SocketInternalError</span>,
 };
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">transport</span>::{<span class="ident">AcceptorTransport</span>, <span class="ident">InitiatorTransport</span>, <span class="ident">TransportMethod</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">transport</span>::{<span class="ident">AcceptorTransport</span>, <span class="ident">InitiatorTransport</span>, <span class="ident">TransportMethod</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internals</span>::<span class="ident">socket</span>::<span class="ident">SocketInternalError</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Mutex</span>;

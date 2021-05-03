@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ReceiptState",""]],"struct":[["MessageQueueReceiver",""],["MessageQueueSender",""],["ReceiverReceipt",""],["SenderReceipt",""]]});

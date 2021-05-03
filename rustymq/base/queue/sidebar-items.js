@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["MessageQueueError","Error handling of internal message queues"],["MessageQueueOverflowHandling","Configuration on how to handle queue overflow errors"]],"struct":[["MessageQueueingPolicy","Message queueing policy setting"]]});

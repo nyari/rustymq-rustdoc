@@ -717,6 +717,10 @@
 <span id="714">714</span>
 <span id="715">715</span>
 <span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Request reply communication model</span>
 <span class="doccomment">//! This module contains the socket implementation for a request-reply communication model.</span>
@@ -725,19 +729,22 @@
 <span class="doccomment">//! The [`RequestSocket`] can be used to send requests to the reply sockets.</span>
 <span class="doccomment">//! ## Example</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use rustymq::core::socket::{Socket, InwardSocket, OutwardSocket, OpFlag, BidirectionalSocket};</span>
-<span class="doccomment">//! use rustymq::core::message::{Message, RawMessage};</span>
-<span class="doccomment">//! use rustymq::core::transport::{TransportMethod, NetworkAddress};</span>
-<span class="doccomment">//! use rustymq::model::reqrep::{RequestSocket, ReplySocket};</span>
+<span class="doccomment">//! use rustymq::base::{Socket, InwardSocket, OutwardSocket, OpFlag, BidirectionalSocket,</span>
+<span class="doccomment">//!                     Message, RawMessage,</span>
+<span class="doccomment">//!                     TransportMethod, NetworkAddress};</span>
+<span class="doccomment">//! use rustymq::model::{RequestSocket, ReplySocket};</span>
 <span class="doccomment">//! use rustymq::transport::network::tcp;</span>
 <span class="doccomment">//! # fn main() {</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let replier = ReplySocket::new(tcp::AcceptorTransport::new(tcp::StreamConnectionBuilder::new(),</span>
-<span class="doccomment">//!                                                            tcp::StreamListenerBuilder::new())).unwrap();</span>
+<span class="doccomment">//! let replier = ReplySocket::new(</span>
+<span class="doccomment">//!                 tcp::AcceptorTransport::new(</span>
+<span class="doccomment">//!                     tcp::StreamConnectionBuilder::new(),</span>
+<span class="doccomment">//!                     tcp::StreamListenerBuilder::new()))</span>
+<span class="doccomment">//!               .unwrap();</span>
 <span class="doccomment">//! let requestor = RequestSocket::new(tcp::InitiatorTransport::new(tcp::StreamConnectionBuilder::new())).unwrap();</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! replier.bind(TransportMethod::Network(NetworkAddress::from_dns(&quot;localhost:13000&quot;.to_string()).unwrap()));</span>
-<span class="doccomment">//! requestor.connect(TransportMethod::Network(NetworkAddress::from_dns(&quot;localhost:13000&quot;.to_string()).unwrap()));</span>
+<span class="doccomment">//! replier.bind(NetworkAddress::from_dns(&quot;localhost:13000&quot;.to_string()).unwrap().into());</span>
+<span class="doccomment">//! requestor.connect(NetworkAddress::from_dns(&quot;localhost:13000&quot;.to_string()).unwrap().into());</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Make sure that TCP connection is established otherwise the first sent message might not arrive</span>
 <span class="doccomment">//! std::thread::sleep(std::time::Duration::from_millis(100));</span>
@@ -746,7 +753,7 @@
 <span class="doccomment">//! let response_payload_requirement: Vec&lt;u8&gt; = vec![2u8, 8u8, 16u8, 32u8];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! requestor.send(RawMessage::new(request_payload.clone()), OpFlag::Wait);</span>
-<span class="doccomment">//! replier.respond(OpFlag::Wait, OpFlag::Wait, move |message| {</span>
+<span class="doccomment">//! replier.respond(OpFlag::Wait, OpFlag::Wait, |message| {</span>
 <span class="doccomment">//!     let mut payload = message.into_payload();</span>
 <span class="doccomment">//!     let reply_payload_extend: Vec&lt;u8&gt; = vec![16u8, 32u8];</span>
 <span class="doccomment">//!     payload.extend(reply_payload_extend.into_iter());</span>
@@ -758,16 +765,17 @@
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">config</span>::<span class="ident">TransportConfiguration</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">message</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">config</span>::<span class="ident">TransportConfiguration</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">message</span>::{
     <span class="ident">ConversationId</span>, <span class="ident">Message</span>, <span class="ident">MessageMetadata</span>, <span class="ident">Part</span>, <span class="ident">PartError</span>, <span class="ident">PeerId</span>, <span class="ident">RawMessage</span>,
 };
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">queue</span>::{<span class="ident">MessageQueueOverflowHandling</span>, <span class="ident">MessageQueueingPolicy</span>};
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">socket</span>::{
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">queue</span>::{<span class="ident">MessageQueueOverflowHandling</span>, <span class="ident">MessageQueueingPolicy</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">socket</span>::{
     <span class="ident">BidirectionalSocket</span>, <span class="ident">InwardSocket</span>, <span class="ident">OpFlag</span>, <span class="ident">OutwardSocket</span>, <span class="ident">PeerIdentification</span>, <span class="ident">Socket</span>,
-    <span class="ident">SocketError</span>, <span class="ident">SocketInternalError</span>,
+    <span class="ident">SocketError</span>,
 };
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">transport</span>::{<span class="ident">AcceptorTransport</span>, <span class="ident">InitiatorTransport</span>, <span class="ident">Transport</span>, <span class="ident">TransportMethod</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">transport</span>::{<span class="ident">AcceptorTransport</span>, <span class="ident">InitiatorTransport</span>, <span class="ident">Transport</span>, <span class="ident">TransportMethod</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internals</span>::<span class="ident">socket</span>::<span class="ident">SocketInternalError</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Mutex</span>;

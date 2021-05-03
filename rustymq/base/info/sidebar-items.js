@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Identifier","IdentifierUsed as an identifier in messages as peer and other identifiers"],["VersionInfo",""]]});

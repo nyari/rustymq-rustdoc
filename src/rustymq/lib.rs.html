@@ -56,6 +56,14 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # RustMQ</span>
 <span class="doccomment">//!</span>
@@ -73,18 +81,25 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Example usage</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use rustymq::model::reqrep::{RequestSocket, ReplySocket};</span>
+<span class="doccomment">//! use rustymq::model::{RequestSocket, ReplySocket};</span>
 <span class="doccomment">//! use rustymq::transport::network::tcp;</span>
-<span class="doccomment">//! use rustymq::core::{Message, RawMessage, OpFlag, Socket,</span>
-<span class="doccomment">//!                     InwardSocket, OutwardSocket, BidirectionalSocket};</span>
+<span class="doccomment">//! use rustymq::base::{Message, RawMessage, OpFlag, Socket,</span>
+<span class="doccomment">//!                     InwardSocket, OutwardSocket, BidirectionalSocket,</span>
+<span class="doccomment">//!                     NetworkAddress};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn main() {</span>
-<span class="doccomment">//!     let requestor = RequestSocket::new(tcp::InitiatorTransport::new(tcp::StreamConnectionBuilder::new())).unwrap();</span>
-<span class="doccomment">//!     let replier = ReplySocket::new(tcp::AcceptorTransport::new(tcp::StreamConnectionBuilder::new(),</span>
-<span class="doccomment">//!                                                                tcp::StreamListenerBuilder::new())).unwrap();</span>
+<span class="doccomment">//!     let requestor = RequestSocket::new(</span>
+<span class="doccomment">//!                         tcp::InitiatorTransport::new(</span>
+<span class="doccomment">//!                             tcp::StreamConnectionBuilder::new()))</span>
+<span class="doccomment">//!                     .unwrap();</span>
+<span class="doccomment">//!     let replier = ReplySocket::new(</span>
+<span class="doccomment">//!                     tcp::AcceptorTransport::new(</span>
+<span class="doccomment">//!                         tcp::StreamConnectionBuilder::new(),</span>
+<span class="doccomment">//!                         tcp::StreamListenerBuilder::new()))</span>
+<span class="doccomment">//!                   .unwrap();</span>
 <span class="doccomment">//!     </span>
-<span class="doccomment">//!     replier.bind(rustymq::core::TransportMethod::Network(rustymq::core::NetworkAddress::from_dns(&quot;localhost:45322&quot;.to_string()).unwrap())).unwrap();</span>
-<span class="doccomment">//!     requestor.connect(rustymq::core::TransportMethod::Network(rustymq::core::NetworkAddress::from_dns(&quot;localhost:45322&quot;.to_string()).unwrap())).unwrap();</span>
+<span class="doccomment">//!     replier.bind(NetworkAddress::from_dns(&quot;localhost:45322&quot;.to_string()).unwrap().into()).unwrap();</span>
+<span class="doccomment">//!     requestor.connect(NetworkAddress::from_dns(&quot;localhost:45322&quot;.to_string()).unwrap().into()).unwrap();</span>
 <span class="doccomment">//!     </span>
 <span class="doccomment">//!     let payload:Vec&lt;u8&gt; = vec![0u8, 5u8];</span>
 <span class="doccomment">//!     let message = RawMessage::new(payload.clone());</span>
@@ -106,7 +121,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;network-openssl-socket-support&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">openssl</span>;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">core</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">base</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">internals</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">model</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">transport</span>;
 

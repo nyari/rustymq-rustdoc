@@ -197,24 +197,24 @@
 <span id="194">194</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Network transport through SSL</span>
-<span class="doccomment">//! This module contains the [`crate::core::transport::Transport`] definitions to be able to use SSL based communication</span>
+<span class="doccomment">//! This module contains the [`crate::base::Transport`] definitions to be able to use SSL based communication</span>
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">internal</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">common</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">openssl</span>::<span class="ident">ssl</span>::{<span class="ident">SslAcceptor</span>, <span class="ident">SslConnector</span>, <span class="ident">SslStream</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">SocketAddr</span>;
 
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">config</span>::<span class="ident">TransportConfiguration</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">message</span>::{<span class="ident">PeerId</span>, <span class="ident">RawMessage</span>};
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">queue</span>::{<span class="ident">MessageQueueReceiver</span>, <span class="ident">MessageQueueSender</span>};
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">socket</span>::<span class="ident">SocketInternalError</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">stream</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">transport</span>::<span class="ident">NetworkAddress</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">config</span>::<span class="ident">TransportConfiguration</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">message</span>::{<span class="ident">PeerId</span>, <span class="ident">RawMessage</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">transport</span>::<span class="ident">NetworkAddress</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internals</span>::<span class="ident">queue</span>::{<span class="ident">MessageQueueReceiver</span>, <span class="ident">MessageQueueSender</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internals</span>::<span class="ident">socket</span>::<span class="ident">SocketInternalError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internals</span>::<span class="ident">stream</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">net</span>::<span class="ident">SocketAddr</span>;
 
 <span class="kw">const</span> <span class="ident">SOCKET_READ_TIMEOUT_MS</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">1</span>;
 
