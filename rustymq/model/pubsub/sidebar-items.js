@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PublisherSocket","Publisher socketThis socket can be used to distribute information to subscribing peers"],["SubscriberSocket","Subscriber socketThis socket serves to connect to one or more publishers that distribute information among connected subscribers."]]});

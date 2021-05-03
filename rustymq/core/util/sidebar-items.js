@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["thread","Threaded operation helper functionalityTiming functionality used internally by RustyMQ"],["time","Timing related helpersTiming functionality used internally by RustyMQ"]],"struct":[["Identifier","IdentifierUsed as an identifier in messages as peer and other identifiers"],["SingleIter","Iterate through single element"],["VersionInfo",""]]});
