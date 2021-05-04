@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["MessageQueueError",""],["MessageQueueOverflowHandling",""],["ReceiptState",""]],"struct":[["MessageQueueReceiver",""],["MessageQueueSender",""],["MessageQueueingPolicy",""],["ReceiverReceipt",""],["SenderReceipt",""]]});

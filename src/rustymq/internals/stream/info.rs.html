@@ -75,7 +75,7 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">error</span>: <span class="ident">io</span>::<span class="ident">Error</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">error</span>.<span class="ident">kind</span>() {
             <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">AddrInUse</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodAlreadyInUse</span>,
-            <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">AddrNotAvailable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">TransportTargetUnreachable</span>,
+            <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">AddrNotAvailable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodTargetUnreachable</span>,
             <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">AlreadyExists</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodAlreadyInUse</span>,
             <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">BrokenPipe</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">Disconnected</span>,
             <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">ConnectionAborted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">Disconnected</span>,
@@ -96,7 +96,7 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">error</span>: <span class="ident">TrackingError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">error</span> {
             <span class="ident">TrackingError</span>::<span class="ident">ReceiptError</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">State</span>::<span class="ident">Stream</span>(<span class="ident">SocketInternalError</span>::<span class="ident">TransportIntegrityError</span>)
+                <span class="ident">State</span>::<span class="ident">Stream</span>(<span class="ident">SocketInternalError</span>::<span class="ident">TransportIntegrityFatalError</span>)
             }
             <span class="ident">TrackingError</span>::<span class="ident">IncompatibleHeaderVersion</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">State</span>::<span class="ident">Stream</span>(<span class="ident">SocketInternalError</span>::<span class="ident">IncompatiblePeer</span>)

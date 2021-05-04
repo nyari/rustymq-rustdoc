@@ -326,6 +326,50 @@
 <span id="323">323</span>
 <span id="324">324</span>
 <span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Socket module</span>
 <span class="doccomment">//! This module contains the traits serving as the main interaction point for RustyMQ</span>
@@ -353,46 +397,90 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SocketError</span> {
     <span class="doccomment">/// Signals if the socket is not in the correct state to process the requested operation</span>
-    <span class="ident">IncorrectStateError</span>,
-    <span class="doccomment">/// The specified peer identifier in [`MessageMetadata`] is unkown by the</span>
-    <span class="ident">UnrelatedPeer</span>,
+    <span class="ident">SocketIncorrectStateError</span>,
+    <span class="doccomment">/// The specified peer identifier in [`MessageMetadata`] is unkown by the socket</span>
+    <span class="ident">SocketUnrelatedPeer</span>,
     <span class="doccomment">/// The specified conversation in the [`MessageMetadata`] is not known by the socket</span>
-    <span class="ident">UnrelatedConversation</span>,
+    <span class="ident">SocketUnrelatedConversation</span>,
     <span class="doccomment">/// The specified conversation part in the [`MessageMetadata`] is not known by the socket</span>
-    <span class="ident">UnrelatedConversationPart</span>,
+    <span class="ident">SocketUnrelatedConversationPart</span>,
+    <span class="doccomment">/// The [`MessageMetadata`] does not contain the conversation identifier although it is required</span>
+    <span class="ident">SocketConversationIdentifierMissing</span>,
     <span class="doccomment">/// The internal gueue in [`Socket`] or Transport has reached its limit</span>
-    <span class="ident">QueueDepthReached</span>,
+    <span class="ident">TransportQueueDepthReached</span>,
     <span class="doccomment">/// Integrity checks on transport layer failed</span>
-    <span class="ident">TransportIntegrityError</span>,
+    <span class="ident">TransportIntegrityFatalError</span>,
     <span class="doccomment">/// The target peer identifier is not specified in the [`MessageMetadata`] and cannot be inferred</span>
-    <span class="ident">UnknownPeer</span>,
+    <span class="ident">SocketUnknownPeer</span>,
     <span class="doccomment">/// The specific [`TransportMethod`] is already used by the socket</span>
     <span class="ident">TransportMethodAlreadyInUse</span>,
-    <span class="doccomment">/// The specific [`TransportMethod`] cannot be found, cannot be connected to</span>
-    <span class="ident">TransportTargetUnreachable</span>,
-    <span class="doccomment">/// The tharget peer specified in [`MessageMetadata`] disconnected</span>
+    <span class="doccomment">/// The specific peer specified by [`TransportMethod`] cannot be found, cannot be connected to</span>
+    <span class="ident">TransportMethodTargetUnreachable</span>,
+    <span class="doccomment">/// The target peer specified in [`MessageMetadata`] disconnected</span>
     <span class="ident">Disconnected</span>,
     <span class="doccomment">/// The tharget specified in [`TransportMethod`] refused the connection</span>
     <span class="ident">ConnectionRefused</span>,
-    <span class="doccomment">/// The operation timed out</span>
+    <span class="doccomment">/// The operation timed out, or NoWait operation did not yield result</span>
     <span class="ident">Timeout</span>,
     <span class="doccomment">/// The connected peer has an incompatible version or communication model</span>
     <span class="ident">IncompatiblePeer</span>,
     <span class="doccomment">/// Handshake with the target peer failed</span>
-    <span class="ident">HandshakeFailed</span>,
+    <span class="ident">TransportHandshakeFailed</span>,
     <span class="doccomment">/// The [`OpFlag`] specified for the [`InwardSocket`] or [`OutwardSocket`] operation is not supprted by</span>
     <span class="doccomment">/// the socket or the underlieing Transport</span>
     <span class="ident">UnsupportedOpFlag</span>(<span class="ident">OpFlag</span>),
     <span class="doccomment">/// DNS domain name required but not available in NetworkAddress</span>
-    <span class="ident">MissingDNSDomain</span>,
+    <span class="ident">TransportMissingDNSDomainName</span>,
     <span class="doccomment">/// The [`TransportMethod`] is not supported by the Transport</span>
-    <span class="ident">InvalidTransportMethod</span>,
+    <span class="ident">TransportMethodNotSupported</span>,
     <span class="doccomment">/// The connection already exists</span>
     <span class="ident">AlreadyConnected</span>,
     <span class="doccomment">/// The requested operation is not supported by socket</span>
     <span class="ident">NotSupportedOperation</span>,
     <span class="doccomment">/// Could not connect to address provided by [`TransportMethod`]</span>
-    <span class="ident">CouldNotConnect</span>,
+    <span class="ident">TransoportCouldNotConnect</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">SocketError</span> {
+    <span class="doccomment">/// True when the issue is caused by missuse of the socket or underlieing transport</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_user_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">SocketError</span>::<span class="ident">SocketIncorrectStateError</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedPeer</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedConversation</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedConversationPart</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">SocketConversationIdentifierMissing</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">SocketUnknownPeer</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">TransportMethodAlreadyInUse</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">UnsupportedOpFlag</span>(<span class="kw">_</span>) <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">TransportMissingDNSDomainName</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">TransportMethodNotSupported</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">AlreadyConnected</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">NotSupportedOperation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
+        }
+    }
+    <span class="doccomment">/// True when the issue might only be temporary, and a retry might solve the issue</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_transient</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">SocketError</span>::<span class="ident">TransportQueueDepthReached</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">TransportMethodTargetUnreachable</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">TransportHandshakeFailed</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">Timeout</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">TransoportCouldNotConnect</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
+        }
+    }
+
+    <span class="doccomment">/// True when the connection to the given peer is broken</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_connection_breaking</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">SocketError</span>::<span class="ident">Disconnected</span> <span class="op">|</span>
+            <span class="ident">SocketError</span>::<span class="ident">ConnectionRefused</span> <span class="op">|</span> 
+            <span class="ident">SocketError</span>::<span class="ident">IncompatiblePeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
+        }
+    }
 }
 
 <span class="doccomment">/// Identifier for a peer</span>
@@ -550,7 +638,7 @@
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PeerId</span><span class="op">&gt;</span>, <span class="ident">SocketError</span>)<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">receive</span>(<span class="ident">receive_flags</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">query_metadata</span> <span class="op">=</span> <span class="ident">query</span>.<span class="ident">metadata</span>().<span class="ident">clone</span>();
-        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">processor</span>(<span class="ident">query</span>).<span class="ident">continue_exchange_metadata</span>(<span class="ident">query_metadata</span>);
+        <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">processor</span>(<span class="ident">query</span>).<span class="ident">continue_conversation_from_metadata</span>(<span class="ident">query_metadata</span>);
         <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">response</span>, <span class="ident">send_flags</span>)
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">error</span><span class="op">|</span> (<span class="prelude-val">None</span>, <span class="ident">error</span>))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())

@@ -47,7 +47,7 @@ Intended to be easily extended and customized, but also provides its own impleme
     <span class="ident">requestor</span>.<span class="ident">send</span>(<span class="ident">message</span>, <span class="ident">OpFlag</span>::<span class="ident">NoWait</span>).<span class="ident">unwrap</span>();
      
     <span class="ident">replier</span>.<span class="ident">respond</span>(<span class="ident">OpFlag</span>::<span class="ident">Wait</span>, <span class="ident">OpFlag</span>::<span class="ident">Wait</span>, <span class="op">|</span><span class="ident">rmessage</span>:<span class="ident">RawMessage</span><span class="op">|</span> {
-        <span class="ident">RawMessage</span>::<span class="ident">new</span>(<span class="ident">rmessage</span>.<span class="ident">payload</span>().<span class="ident">clone</span>()).<span class="ident">continue_exchange_metadata</span>(<span class="ident">rmessage</span>.<span class="ident">into_metadata</span>())
+        <span class="ident">RawMessage</span>::<span class="ident">new</span>(<span class="ident">rmessage</span>.<span class="ident">payload</span>().<span class="ident">clone</span>()).<span class="ident">continue_conversation_from_metadata</span>(<span class="ident">rmessage</span>.<span class="ident">into_metadata</span>())
     }).<span class="ident">unwrap</span>();
      
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">payload</span>, <span class="ident">requestor</span>.<span class="ident">receive</span>(<span class="ident">OpFlag</span>::<span class="ident">Wait</span>).<span class="ident">unwrap</span>().<span class="ident">into_payload</span>());

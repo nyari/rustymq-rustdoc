@@ -114,6 +114,8 @@
 <span id="111">111</span>
 <span id="112">112</span>
 <span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">queue</span>::<span class="ident">MessageQueueError</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">base</span>::<span class="ident">socket</span>::{<span class="ident">OpFlag</span>, <span class="ident">SocketError</span>};
@@ -124,26 +126,27 @@
 <span class="doccomment">/// Contains the possible errors for a socket that may need to be handled internally or by the user</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SocketInternalError</span> {
-    <span class="ident">IncorrectStateError</span>,
-    <span class="ident">UnrelatedPeer</span>,
-    <span class="ident">UnrelatedConversation</span>,
-    <span class="ident">UnrelatedConversationPart</span>,
-    <span class="ident">QueueDepthReached</span>,
-    <span class="ident">TransportIntegrityError</span>,
-    <span class="ident">UnknownPeer</span>,
+    <span class="ident">SocketIncorrectStateError</span>,
+    <span class="ident">SocketUnrelatedPeer</span>,
+    <span class="ident">SocketUnrelatedConversation</span>,
+    <span class="ident">SocketUnrelatedConversationPart</span>,
+    <span class="ident">SocketConversationIdentifierMissing</span>,
+    <span class="ident">TransportQueueDepthReached</span>,
+    <span class="ident">TransportIntegrityFatalError</span>,
+    <span class="ident">SocketUnknownPeer</span>,
     <span class="ident">TransportMethodAlreadyInUse</span>,
-    <span class="ident">TransportTargetUnreachable</span>,
+    <span class="ident">TransportMethodTargetUnreachable</span>,
     <span class="ident">Disconnected</span>,
     <span class="ident">ConnectionRefused</span>,
     <span class="ident">Timeout</span>,
     <span class="ident">IncompatiblePeer</span>,
-    <span class="ident">HandshakeFailed</span>,
+    <span class="ident">TransportHandshakeFailed</span>,
     <span class="ident">UnsupportedOpFlag</span>(<span class="ident">OpFlag</span>),
-    <span class="ident">MissingDNSDomain</span>,
-    <span class="ident">InvalidTransportMethod</span>,
+    <span class="ident">TransportMissingDNSDomainName</span>,
+    <span class="ident">TransportMethodNotSupported</span>,
     <span class="ident">AlreadyConnected</span>,
     <span class="ident">NotSupportedOperation</span>,
-    <span class="ident">CouldNotConnect</span>,
+    <span class="ident">TransoportCouldNotConnect</span>,
 
     <span class="ident">IncompleteData</span>,
     <span class="ident">UnknownInternalError</span>(<span class="ident">String</span>),
@@ -168,7 +171,7 @@
             <span class="ident">MessageQueueError</span>::<span class="ident">ReceiversAllDropped</span> <span class="op">|</span> <span class="ident">MessageQueueError</span>::<span class="ident">SendersAllDropped</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">SocketInternalError</span>::<span class="ident">Disconnected</span>
             }
-            <span class="ident">MessageQueueError</span>::<span class="ident">QueueFull</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">QueueDepthReached</span>,
+            <span class="ident">MessageQueueError</span>::<span class="ident">QueueFull</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">TransportQueueDepthReached</span>,
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketInternalError</span>::<span class="ident">UnknownInternalError</span>(<span class="macro">format</span><span class="macro">!</span>(
                 <span class="string">&quot;Could not convert to SocketInternalError: {:?}&quot;</span>,
                 <span class="ident">input</span>
@@ -193,34 +196,35 @@
     <span class="doccomment">/// Convert [`SocketInternalError`] to [`SocketError`] . Will panic in case of error is not handleable by user</span>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">input</span>: <span class="ident">SocketInternalError</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SocketError</span> {
         <span class="kw">match</span> <span class="ident">input</span> {
-            <span class="ident">SocketInternalError</span>::<span class="ident">IncorrectStateError</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">IncorrectStateError</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">UnrelatedPeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">UnrelatedPeer</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">UnrelatedConversation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">UnrelatedConversation</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">UnrelatedConversationPart</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">SocketError</span>::<span class="ident">UnrelatedConversationPart</span>
-            }
-            <span class="ident">SocketInternalError</span>::<span class="ident">QueueDepthReached</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">QueueDepthReached</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">TransportIntegrityError</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportIntegrityError</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">UnknownPeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">UnknownPeer</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketIncorrectStateError</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">SocketIncorrectStateError</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketUnrelatedPeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedPeer</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketUnrelatedConversation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedConversation</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketUnrelatedConversationPart</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">SocketError</span>::<span class="ident">SocketUnrelatedConversationPart</span>
+            },
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketConversationIdentifierMissing</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">SocketConversationIdentifierMissing</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportQueueDepthReached</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportQueueDepthReached</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportIntegrityFatalError</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportIntegrityFatalError</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">SocketUnknownPeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">SocketUnknownPeer</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodAlreadyInUse</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">SocketError</span>::<span class="ident">TransportMethodAlreadyInUse</span>
             }
-            <span class="ident">SocketInternalError</span>::<span class="ident">TransportTargetUnreachable</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">SocketError</span>::<span class="ident">TransportTargetUnreachable</span>
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodTargetUnreachable</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">SocketError</span>::<span class="ident">TransportMethodTargetUnreachable</span>
             }
             <span class="ident">SocketInternalError</span>::<span class="ident">Disconnected</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">Disconnected</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">ConnectionRefused</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">ConnectionRefused</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">Timeout</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">Timeout</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">IncompatiblePeer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">IncompatiblePeer</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">HandshakeFailed</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">HandshakeFailed</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportHandshakeFailed</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportHandshakeFailed</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">UnsupportedOpFlag</span>(<span class="ident">op_flag</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">SocketError</span>::<span class="ident">UnsupportedOpFlag</span>(<span class="ident">op_flag</span>)
             }
-            <span class="ident">SocketInternalError</span>::<span class="ident">MissingDNSDomain</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">MissingDNSDomain</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">InvalidTransportMethod</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">InvalidTransportMethod</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportMissingDNSDomainName</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportMissingDNSDomainName</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransportMethodNotSupported</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransportMethodNotSupported</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">AlreadyConnected</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">AlreadyConnected</span>,
             <span class="ident">SocketInternalError</span>::<span class="ident">NotSupportedOperation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">NotSupportedOperation</span>,
-            <span class="ident">SocketInternalError</span>::<span class="ident">CouldNotConnect</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">CouldNotConnect</span>,
+            <span class="ident">SocketInternalError</span>::<span class="ident">TransoportCouldNotConnect</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SocketError</span>::<span class="ident">TransoportCouldNotConnect</span>,
             <span class="ident">err</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(
                 <span class="string">&quot;SocketInternalError occured that cannot be converted to SocketError: {:?}&quot;</span>,
                 <span class="ident">err</span>

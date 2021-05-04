@@ -107,7 +107,7 @@
 <span class="doccomment">//!     requestor.send(message, OpFlag::NoWait).unwrap();</span>
 <span class="doccomment">//!     </span>
 <span class="doccomment">//!     replier.respond(OpFlag::Wait, OpFlag::Wait, |rmessage:RawMessage| {</span>
-<span class="doccomment">//!         RawMessage::new(rmessage.payload().clone()).continue_exchange_metadata(rmessage.into_metadata())</span>
+<span class="doccomment">//!         RawMessage::new(rmessage.payload().clone()).continue_conversation_from_metadata(rmessage.into_metadata())</span>
 <span class="doccomment">//!     }).unwrap();</span>
 <span class="doccomment">//!     </span>
 <span class="doccomment">//!     assert_eq!(payload, requestor.receive(OpFlag::Wait).unwrap().into_payload());</span>
